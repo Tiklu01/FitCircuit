@@ -22,6 +22,7 @@ interface Exercise {
   image: string;
   equipment: string[];
   muscleGroup: string[];
+  caloriesBurned: number;
 }
 
 interface Day {
@@ -219,7 +220,7 @@ Generate a *complete* structured workout plan for ${weeklyFrequency} days per we
 - Consider the user's *intensity level* and *health considerations*.
 - Include *no rest days* if specified.
 - Adjust the *session length* and *equipment* as per user input.
-
+- Make an estimaed guess on the *calories burned* for each exercise.
 ---
 
 ### User Inputs:
@@ -265,7 +266,8 @@ Return the structured workout plan in JSON format following this structure:
                             "restTime": "45 sec",
                             "image": "",
                             "equipment": ["Dumbbells"],
-                            "muscleGroup": ["Chest", "Triceps"]
+                            "muscleGroup": ["Chest", "Triceps"],
+                            "caloriesBurned": 100
                         }
                     ],
                     "status": "pending"
@@ -284,7 +286,7 @@ Return the structured workout plan in JSON format following this structure:
     const chatResponse = await client.chat.complete({
       model: "mistral-large-latest",
       messages: [{ role: "user", content: promptWorkout }],
-      maxTokens: 18000,
+      maxTokens: 20000,
     });
 
     if(!chatResponse) {
