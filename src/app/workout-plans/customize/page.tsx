@@ -14,7 +14,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea"
 import type { WorkoutPreferences } from "@/types/workout"
 import { Toggle } from "@/components/ui/toggle"
-
+import { useRouter } from "next/navigation"
 const goals = [
   { icon: Dumbbell, label: "Weight Loss" },
   { icon: Flame, label: "Muscle Gain" },
@@ -25,6 +25,8 @@ const goals = [
 ]
 
 export default function CustomizeWorkoutPlan() {
+  const router = useRouter()
+  const [loading, setLoading] = useState(false)
   const [preferences, setPreferences] = useState<WorkoutPreferences>({
     goal: "",
     eventName: "",
@@ -63,13 +65,60 @@ export default function CustomizeWorkoutPlan() {
     return "Obese"
   }
 
+  // const handleSubmit = async (e: React.FormEvent) => {
+  //   e.preventDefault()
+  //   // Here you would typically send the preferences to your backend
+  //   console.log("Submitting preferences:", preferences)
+  //   // Redirect to the workout plan page
+  //   window.location.href = "/workout-plans"
+  // }
+
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    // Here you would typically send the preferences to your backend
-    console.log("Submitting preferences:", preferences)
-    // Redirect to the workout plan page
-    window.location.href = "/workout-plans"
-  }
+    e.preventDefault();
+    setLoading(true)
+    const formData = {
+        goal: preferences.goal || "",
+        eventName: preferences.eventName || "",
+        bodyMetrics: {
+            height: preferences.height || 0,
+            weight: preferences.weight || 0,
+        },
+        programDuration: preferences.programDuration || "",
+        equipment: preferences.equipment || [],
+        sessionLength: preferences.sessionLength || 0,
+        weeklyFrequency: preferences.weeklyFrequency || "",
+        noRestDays: preferences.noRestDays || false,
+        intensityLevel: preferences.intensityLevel || "",
+        healthConsiderations: preferences.healthConsiderations || [],
+        additionalDetails: preferences.additionalDetails || "",
+    };
+
+    try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/workout`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ workoutPreference: formData }),
+        });
+        
+        if (res.ok) {
+            console.log("Preferences submitted successfully");
+            setLoading(false)
+            // window.location.href = "/workout-plans";
+            router.push("/workout-plans")
+        } else {
+            console.error("Failed to submit preferences");
+        }
+    } catch (error) {
+        console.error("Error submitting preferences:", error);
+    } finally {
+      setLoading(false)
+    }
+};
+
+  
+
 
   return (
     <div className="min-h-screen bg-background min-w-full">
@@ -181,9 +230,9 @@ export default function CustomizeWorkoutPlan() {
                       <SelectValue placeholder="Select duration" />
                     </SelectTrigger>
                     <SelectContent className="bg-gray-100 text-black">
+                      <SelectItem value="1 weeks">1 weeks</SelectItem>
+                      <SelectItem value="2 weeks">2 weeks</SelectItem>
                       <SelectItem value="4 weeks">4 weeks</SelectItem>
-                      <SelectItem value="8 weeks">8 weeks</SelectItem>
-                      <SelectItem value="12 weeks">12 weeks</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -338,12 +387,11 @@ export default function CustomizeWorkoutPlan() {
             </Card>
 
             <Button type="submit" className="w-full">
-              Continue to Next Step
+             {loading ? "Loading":  "Continue to Next Step" }
             </Button>
           </form>
-        </motion.div>
+        </motion.div> 
       </main>
     </div>
   )
 }
-
