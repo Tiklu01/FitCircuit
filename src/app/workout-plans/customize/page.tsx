@@ -83,6 +83,7 @@ export default function CustomizeWorkoutPlan() {
         bodyMetrics: {
             height: preferences.height || 0,
             weight: preferences.weight || 0,
+            bmi: calculateBMI(),
         },
         programDuration: preferences.programDuration || "",
         equipment: preferences.equipment || [],
