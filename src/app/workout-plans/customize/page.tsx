@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
 import { useState } from "react"
@@ -137,7 +138,7 @@ export default function CustomizeWorkoutPlan() {
             {/* Fitness Goals */}
             <Card>
               <CardContent className="p-6">
-                <h2 className="font-semibold mb-4">What's your primary fitness goal?</h2>
+                <h2 className="font-semibold mb-4">What&apos;s your primary fitness goal?</h2>
                 <div className="grid gap-4 sm:grid-cols-2">
                   {goals.map((goal) => (
                     <Button
