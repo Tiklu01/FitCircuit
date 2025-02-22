@@ -230,7 +230,7 @@ export default function WorkoutPlans() {
                       <div className="flex-1">
                         <div className="flex justify-between items-start">
                           <div>
-                            <h3 className="font-semibold">{exercise.name}</h3>
+                            <h3 className="font-semibold text-lg">{exercise.name}</h3>
                             <p className="text-sm text-muted-foreground">
                               {exercise.sets} sets × {exercise.reps} reps
                             </p>
@@ -245,7 +245,10 @@ export default function WorkoutPlans() {
                         </div>
                         <div className="flex gap-2 mt-2">
                           {exercise.muscles.map((muscle) => (
-                            <span key={muscle} className="inline-block px-2 py-1 text-xs rounded-full bg-secondary">
+                            <span
+                              key={muscle}
+                              className="inline-block px-2 py-1 text-xs rounded-full bg-secondary text-primary"
+                            >
                               {muscle}
                             </span>
                           ))}
@@ -259,8 +262,8 @@ export default function WorkoutPlans() {
           </div>
 
           {/* Progress Footer */}
-          <div className="flex justify-between items-center pt-4 border-t">
-            <div className="space-y-1">
+          <div className="flex flex-col md:flex-row justify-between items-center pt-4 border-t">
+            <div className="space-y-1 mb-4 md:mb-0">
               <div className="text-sm text-muted-foreground">{workoutPlan.streak} day streak</div>
               <div className="text-sm text-muted-foreground">{workoutPlan.totalWorkouts} workouts completed</div>
             </div>
