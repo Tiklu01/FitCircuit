@@ -5,9 +5,10 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --radius: 10px; /* Adjust as needed */
 }
 
-@media (prefers-color-scheme: dark) {
+@media (prefers-color-scheme: light) {
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
@@ -18,4 +19,21 @@ body {
   color: var(--foreground);
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+
+ /* body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden; /* Prevent scrolling during animation */
+/* }  */ 
+
+.fixed {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--background); /* Use your theme's background color */
+  z-index: 50; /* Ensure it's on top of everything */
 }
