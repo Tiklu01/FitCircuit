@@ -72,7 +72,7 @@ export default function CustomizeMealPlan() {
     }
     try {
       setLoading(true)
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/meal`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/meal/customize`, {
         method: "POST",
         body: JSON.stringify({ mealPreference }),
       })
