@@ -17,7 +17,7 @@ export default function LoadingAnimation() {
       setIsLoading(false);
       // Re-enable scrolling after the loading animation is done
       document.body.style.overflow = "visible";
-    }, 3000);
+    }, 2300);
 
     // Cleanup function to re-enable scrolling if the component unmounts
     return () => {
