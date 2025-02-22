@@ -1,32 +1,42 @@
 export type WorkoutStatus = "completed" | "in-progress" | "upcoming"
 
-export interface Exercise {
-  id: string
-  name: string
-  sets: number
-  reps: number
-  muscles: string[]
-  imageUrl: string
 
-}
+// export type Exercise = {
+//   id: string;
+//   name: string;
+//   instructions: string;
+//   description?: string;
+//   sets: number;
+//   reps?: number;
+//   time?: string;
+//   restTime?: string;
+//   image?: string;
+//   equipment: string[];
+//   muscleGroup: string[];
+// };
 
-export type WorkoutDay = {
-  day: number;
-  type: string;
-  exercises: Exercise[];  // Ensure Exercise type exists
-  duration: number;
-  status: "completed" | "in-progress" | "upcoming";
+// export type WorkoutDay = {
+//   day: number;
+//   type: string;
+//   exercisesCount: number;
+//   // exercises: Exercise[];  // Ensure Exercise type exists
+//   duration: number;
+//   workouts: Exercise[];
+//   status: "completed" | "in-progress" | "upcoming";
+// };
+
+type Exercise = {
+  name: string;
+  instructions: string;
+  description: string;
+  sets: number;
+  reps: number;
+  time: string;
+  restTime: string;
+  image: string;
+  equipment: string[];
+  muscleGroup: string[];
 };
-
-
-// export interface DayWorkout {
-//   day: number
-//   type: string
-//   exercises: number
-//   duration: number
-//   status: WorkoutStatus
-// }
-
 export interface DayWorkout {
   day: number
   type: string
@@ -48,15 +58,29 @@ export interface WeekProgress {
 }
 
 
-export interface WorkoutPlan {
-  currentWeek: number
-  currentDay: number
-  streak: number
-  totalWorkouts: number
-  progress: WeekProgress[]
-}
+// export interface WorkoutPlan {
+//   currentWeek: number
+//   currentDay: number
+//   streak: number
+//   totalWorkouts: number
+//   progress: WeekProgress[]
+// }
+
+export type WeekWorkout = {
+  week: number;
+  days: DayWorkout[];
+  status: 'pending' | 'completed';
+};
 
 
+export type WorkoutPlan = {
+  userId: string;
+  weeks: WeekWorkout[];
+  currentWeek: number;
+  currentDay: number;
+  streak: number;
+  totalWorkouts: number;
+};
 
 export interface WorkoutPreferences {
   goal: string
