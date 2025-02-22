@@ -28,14 +28,17 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider>
-    <html lang="en" suppressHydrationWarning>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        <LoadingAnimation/>
-        {children}
-      </body>
-    </html>
+      <html lang="en" suppressHydrationWarning>
+        <body
+          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        >
+          <script src="https://cdn.botpress.cloud/webchat/v2.2/inject.js"></script>
+          <script src="https://files.bpcontent.cloud/2025/02/22/14/20250222145729-YKXE6DN6.js"></script>
+
+          <LoadingAnimation />
+          {children}
+        </body>
+      </html>
     </ClerkProvider>
   );
 }
