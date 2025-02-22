@@ -30,6 +30,7 @@ export default function CustomizeMealPlan() {
   const [loading, setLoading] = useState(false)
   const [height, setHeight] = useState<number | null>(null)
   const [weight, setWeight] = useState<number | null>(null)
+  const [age, setAge] = useState<number | null>(null) // New state for age
 
   const handleMealSelection = (title: string) => {
     setSelectedMeal(title)
@@ -67,8 +68,8 @@ export default function CustomizeMealPlan() {
       allergies,
       height,
       weight,
+      age, // Include age in the meal preference
       bmi: calculateBMI(),
-      bmiCategory: getBMICategory(Number(calculateBMI())),
     }
     try {
       setLoading(true)
@@ -115,12 +116,12 @@ export default function CustomizeMealPlan() {
           </div>
 
           <Card>
-            <CardContent className="p-6 space-y-6">
+            <CardContent className="p-6 space-y-6" >
               {/* BMI Section */}
               <div>
                 <h2 className="font-semibold mb-4">Body Metrics</h2>
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <div className="space-y-2">
+                <div className="flex gap-4 w-full justify-center align-center">
+                  <div className="space-y-2 w-full">
                     <Label htmlFor="height">Height (cm)</Label>
                     <Input
                       id="height"
@@ -130,7 +131,7 @@ export default function CustomizeMealPlan() {
                       onChange={(e) => setHeight(Number(e.target.value))}
                     />
                   </div>
-                  <div className="space-y-2">
+                  <div className="space-y-2 w-full">
                     <Label htmlFor="weight">Weight (kg)</Label>
                     <Input
                       id="weight"
@@ -140,6 +141,18 @@ export default function CustomizeMealPlan() {
                       onChange={(e) => setWeight(Number(e.target.value))}
                     />
                   </div>
+                  <div className="space-y-2 w-full">
+                    <Label htmlFor="age">Age</Label>
+                    <Input
+                      id="age"
+                      type="number"
+                      placeholder="Enter your age"
+                      value={age || ""}
+                      onChange={(e) => setAge(Number(e.target.value))}
+                      min={16}
+                      max={99}
+                    />
+                  </div>
                 </div>
                 {height && weight && (
                   <div className="mt-4">
@@ -147,7 +160,7 @@ export default function CustomizeMealPlan() {
                       Your BMI: <span className="font-semibold">{calculateBMI()}</span>
                       {" - "}
                       <span
-                        className={`text-muted-foreground px-2 py-1 rounded-full 
+                        className={`text-muted-foreground px-2 py-1 rounded-full
                           ${
                             getBMICategory(Number(calculateBMI())) === "Normal"
                               ? "bg-green-200/50 text-green-700"
@@ -349,4 +362,3 @@ export default function CustomizeMealPlan() {
     </div>
   )
 }
-

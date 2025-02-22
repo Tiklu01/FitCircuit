@@ -12,6 +12,7 @@ interface IMealPreference extends Document {
     bmi: number;
     height: number;
     weight: number;
+    age: number;
 }
 
 const mealPreferenceSchema = new Schema<IMealPreference>(
@@ -35,6 +36,7 @@ const mealPreferenceSchema = new Schema<IMealPreference>(
         bmi: { type: Number, default: 0 },
         height: { type: Number, default: 0 },
         weight: { type: Number, default: 0 },
+        age: { type: Number, default: 0 },
     },
     { timestamps: true }
 );

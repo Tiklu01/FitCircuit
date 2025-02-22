@@ -11,6 +11,7 @@ const exerciseSchema = new mongoose.Schema({
     image: { type: String }, // URL to exercise image
     equipment: { type: [String], default: [] }, // List of equipment needed
     muscleGroup: { type: [String], default: [] }, // Targeted muscle groups
+    caloriesBurned: { type: Number,  default: 0 },
 });
 
 const daySchema = new mongoose.Schema({
