@@ -1,297 +1,232 @@
-"use client"
+"use client";
 
-import { motion } from "framer-motion"
-import { useState } from "react"
-import { Check, Clock } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { PageHeader } from "@/components/ui/page-header"
-import type { WorkoutPlan, Exercise, WorkoutDay, DayWorkout  } from "@/types/workout"
+import { motion } from "framer-motion";
+import { useState, useEffect } from "react";
+import { Check, Clock } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import Image from "next/image";
+import { PageHeader } from "@/components/ui/page-header";
 
-const mockWorkoutPlan: WorkoutPlan = {
-  currentWeek: 3,
-  currentDay: 2,
-  streak: 14,
-  totalWorkouts: 32,
-  progress: [
-    {
-      week: 1,
-      status: "completed",
-      days: [
-        { day: 1, type: "Upper Body", exercises: 8, duration: 45, status: "completed" },
-        { day: 2, type: "Lower Body", exercises: 6, duration: 40, status: "completed" },
-        { day: 3, type: "Core & Cardio", exercises: 7, duration: 35, status: "completed" },
-        { day: 4, type: "Full Body", exercises: 10, duration: 50, status: "completed" },
-      ],
-    },
-    {
-      week: 2,
-      status: "completed",
-      days: Array(4)
-        .fill(null)
-        .map((_, i) => ({
-          day: i + 1,
-          type: ["Upper Body", "Lower Body", "Core & Cardio", "Full Body"][i],
-          exercises: [8, 6, 7, 10][i],
-          duration: [45, 40, 35, 50][i],
-          status: "completed",
-        })),
-    },
-    {
-      week: 3,
-      status: "in-progress",
-      days: [
-        { day: 1, type: "Upper Body", exercises: 8, duration: 45, status: "completed" },
-        { day: 2, type: "Lower Body", exercises: 6, duration: 40, status: "in-progress" },
-        { day: 3, type: "Core & Cardio", exercises: 7, duration: 35, status: "upcoming" },
-        { day: 4, type: "Full Body", exercises: 10, duration: 50, status: "upcoming" },
-      ],
-    },
-    {
-      week: 4,
-      status: "upcoming",
-      days: Array(4)
-        .fill(null)
-        .map((_, i) => ({
-          day: i + 1,
-          type: ["Upper Body", "Lower Body", "Core & Cardio", "Full Body"][i],
-          exercises: [8, 6, 7, 10][i],
-          duration: [45, 40, 35, 50][i],
-          status: "upcoming",
-        })),
-    },
-  ],
+interface Exercise {
+  name: string;
+  sets: number;
+  reps: number;
+  muscles: string[];
+  imageUrl: string;
+  caloriesBurned: number;
 }
 
-const exerciseData: Record<number, Exercise[]> = {
-  1: [
-    { id: "1", name: "Push-ups", sets: 3, reps: 15, muscles: ["Chest", "Arms"], imageUrl: "/placeholder.svg" },
-    { id: "2", name: "Pull-ups", sets: 3, reps: 10, muscles: ["Back", "Arms"], imageUrl: "/placeholder.svg" },
-    { id: "3", name: "Dumbbell Bench Press", sets: 4, reps: 12, muscles: ["Chest", "Triceps"], imageUrl: "/placeholder.svg" },
-    { id: "4", name: "Tricep Dips", sets: 3, reps: 12, muscles: ["Triceps"], imageUrl: "/placeholder.svg" },
-  ],
-  2: [
-    { id: "5", name: "Squats", sets: 4, reps: 12, muscles: ["Legs", "Glutes"], imageUrl: "/placeholder.svg" },
-    { id: "6", name: "Lunges", sets: 3, reps: 12, muscles: ["Legs"], imageUrl: "/placeholder.svg" },
-    { id: "7", name: "Leg Press", sets: 3, reps: 15, muscles: ["Legs", "Calves"], imageUrl: "/placeholder.svg" },
-    { id: "8", name: "Calf Raises", sets: 4, reps: 20, muscles: ["Calves"], imageUrl: "/placeholder.svg" },
-  ],
-  3: [
-    { id: "9", name: "Deadlifts", sets: 4, reps: 10, muscles: ["Back", "Legs"], imageUrl: "/placeholder.svg" },
-    { id: "10", name: "Bent-over Rows", sets: 3, reps: 12, muscles: ["Back", "Biceps"], imageUrl: "/placeholder.svg" },
-    { id: "11", name: "Lat Pulldown", sets: 3, reps: 15, muscles: ["Back"], imageUrl: "/placeholder.svg" },
-    { id: "12", name: "Face Pulls", sets: 3, reps: 12, muscles: ["Shoulders"], imageUrl: "/placeholder.svg" },
-  ],
-  4: [
-    { id: "13", name: "Bicep Curls", sets: 3, reps: 15, muscles: ["Biceps"], imageUrl: "/placeholder.svg" },
-    { id: "14", name: "Hammer Curls", sets: 3, reps: 12, muscles: ["Biceps", "Forearms"], imageUrl: "/placeholder.svg" },
-    { id: "15", name: "Preacher Curls", sets: 3, reps: 12, muscles: ["Biceps"], imageUrl: "/placeholder.svg" },
-    { id: "16", name: "Wrist Curls", sets: 3, reps: 15, muscles: ["Forearms"], imageUrl: "/placeholder.svg" },
-  ],
-  5: [
-    { id: "17", name: "Overhead Shoulder Press", sets: 3, reps: 12, muscles: ["Shoulders", "Triceps"], imageUrl: "/placeholder.svg" },
-    { id: "18", name: "Lateral Raises", sets: 3, reps: 15, muscles: ["Shoulders"], imageUrl: "/placeholder.svg" },
-    { id: "19", name: "Front Raises", sets: 3, reps: 12, muscles: ["Shoulders"], imageUrl: "/placeholder.svg" },
-    { id: "20", name: "Shrugs", sets: 4, reps: 15, muscles: ["Traps"], imageUrl: "/placeholder.svg" },
-  ],
-  6: [
-    { id: "21", name: "Russian Twists", sets: 3, reps: 20, muscles: ["Core"], imageUrl: "/placeholder.svg" },
-    { id: "22", name: "Planks", sets: 3, reps: 60, muscles: ["Core"], imageUrl: "/placeholder.svg" },
-    { id: "23", name: "Leg Raises", sets: 3, reps: 15, muscles: ["Core"], imageUrl: "/placeholder.svg" },
-    { id: "24", name: "Bicycle Crunches", sets: 3, reps: 20, muscles: ["Core"], imageUrl: "/placeholder.svg" },
-  ],
-  7: [
-    { id: "25", name: "Jump Rope", sets: 3, reps: 2, muscles: ["Cardio"], imageUrl: "/placeholder.svg" },
-    { id: "26", name: "Rowing Machine", sets: 3, reps: 5, muscles: ["Cardio"], imageUrl: "/placeholder.svg" },
-    { id: "27", name: "Burpees", sets: 3, reps: 12, muscles: ["Full Body"], imageUrl: "/placeholder.svg" },
-    { id: "28", name: "Mountain Climbers", sets: 3, reps: 20, muscles: ["Full Body"], imageUrl: "/placeholder.svg" },
-  ],
-};
+interface DayWorkout {
+  day: number;
+  type: string;
+  exercises: Exercise[];
+  duration: number;
+  status: "completed" | "in-progress" | "upcoming";
+}
 
-const todaysExercises: Exercise[] = [
-  // {
-  //   id: "1",
-  //   name: "Barbell Squats",
-  //   sets: 4,
-  //   reps: 12,
-  //   muscles: ["Legs", "Glutes"],
-  //   imageUrl: "/placeholder.svg",
-  // },
-  // {
-  //   id: "2",
-  //   name: "Romanian Deadlifts",
-  //   sets: 3,
-  //   reps: 15,
-  //   muscles: ["Legs", "Back"],
-  //   imageUrl: "/placeholder.svg",
-  // },
-]
+interface WeekProgress {
+  week: number;
+  status: "completed" | "in-progress" | "upcoming";
+  days: DayWorkout[];
+}
+
+interface WorkoutPlan {
+  currentWeek: number;
+  currentDay: number;
+  streak: number;
+  totalWorkouts: number;
+  progress: WeekProgress[];
+}
 
 export default function WorkoutPlans() {
-  const [workoutPlan] = useState<WorkoutPlan>(mockWorkoutPlan)
-  const [completedExercises, setCompletedExercises] = useState<Set<string>>(new Set())
-  const [selectedDayExercises, setSelectedDayExercises] = useState<Exercise[]>(todaysExercises); // Default to today's exercises
-  
-  const [completedExercisesByDay, setCompletedExercisesByDay] = useState<Record<string, Set<string>>>({});
+  const [workoutPlan, setWorkoutPlan] = useState<WorkoutPlan | null>(null);
+  const [selectedWeek, setSelectedWeek] = useState<number>(1);
+  const [selectedDay, setSelectedDay] = useState<number>(1);
+  const [completedExercises, setCompletedExercises] = useState<Set<string>>(new Set());
 
-  const [selectedDay, setSelectedDay] = useState<{ day: number } | null>({ day: 0 });
+  useEffect(() => {
+    // Fetch workout plan data from your API
+    const fetchWorkoutPlan = async () => {
+      try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/workout`);
+        if (response.ok) {
+          const data = await response.json();
+          const transformedData = transformWorkoutData(data.workoutPlan);
+          setWorkoutPlan(transformedData);
+          setSelectedWeek(transformedData.currentWeek);
+          setSelectedDay(transformedData.currentDay);
+        } else {
+          console.error("Failed to fetch workout plan");
+        }
+      } catch (error) {
+        console.error("Error fetching workout plan:", error);
+      }
+    };
 
-  
+    fetchWorkoutPlan();
+  }, []);
 
+  const transformWorkoutData = (data: any): WorkoutPlan => {
+    const weeks = data.map((weekData: any, weekIndex: number) => ({
+      week: weekIndex + 1,
+      status: weekData.status || "upcoming",
+      days: weekData.days.map((dayData: any) => ({
+        day: dayData.day,
+        type: "", // You can set a default type if needed
+        exercises: dayData.exercises.map((exercise: any) => ({
+          name: exercise.name,
+          sets: exercise.sets,
+          reps: exercise.reps,
+          muscles: exercise.muscleGroup || [],
+          imageUrl: exercise.image || "",
+        })),
+        duration: dayData.exercises.reduce((total: number, exercise: any) => total + (exercise.time ? parseInt(exercise.time) : 0), 0),
+        status: dayData.status || "upcoming",
+      })),
+    }));
 
-
-  const handleDayClick = (day: DayWorkout) => {
-    setSelectedDayExercises(exerciseData[day.day] || []);
+    return {
+      currentWeek: data.length > 0 ? data[0].days[0].day : 1,
+      currentDay: data.length > 0 ? data[0].days[0].day : 1,
+      streak: 0, // Replace with actual streak logic if available
+      totalWorkouts: weeks.flatMap((week: any) => week.days).length,
+      progress: weeks,
+    };
   };
 
- 
-  const toggleExercise = (id: string) => {
+  const toggleExercise = (name: string) => {
     setCompletedExercises((prev) => {
       const newSet = new Set(prev);
-      if (newSet.has(id)) {
-        newSet.delete(id);
+      if (newSet.has(name)) {
+        newSet.delete(name);
       } else {
-        newSet.add(id);
+        newSet.add(name);
       }
       return newSet;
     });
-  
-  
-  
-setCompletedExercisesByDay((prev) => {
-  if (!selectedDay?.day) return prev; // Ensure selectedDay exists
 
-  const dayKey = selectedDay.day;
-  const updatedSet = new Set(prev[dayKey] || []);
+    const selectedExercises = workoutPlan?.progress[selectedWeek - 1]?.days.find((day) => day.day === selectedDay)?.exercises || [];
+    const allExercisesCompleted = selectedExercises.every((ex) => completedExercises.has(ex.name));
 
-  if (updatedSet.has(id)) {
-    updatedSet.delete(id);
-  } else {
-    updatedSet.add(id);
-  }
-
-  return { ...prev, [dayKey]: updatedSet };
-});
-  }
-  
-  const isDayCompleted = (day: DayWorkout) => {
-   if (!selectedDay) return false; // Prevent errors
-     const dayKey = selectedDay.day;
-    const completedSet = completedExercisesByDay[dayKey] || new Set();
-    
-    return todaysExercises.length > 0 && todaysExercises.every(ex => completedSet.has(ex.id));
+    if (allExercisesCompleted) {
+      setWorkoutPlan((prev) => {
+        if (!prev) return prev;
+        const updatedProgress = prev.progress.map((week) => ({
+          ...week,
+          days: week.days.map((day) => {
+            if (day.day === selectedDay) {
+              return { ...day, status: "completed" as "completed" };
+            }
+            return day;
+          }),
+        }));
+        return { ...prev, progress: updatedProgress };
+      });
+    }
   };
-  
-  
+
+  const handleWeekClick = (week: number) => {
+    setSelectedWeek(week);
+    setSelectedDay(workoutPlan?.progress[week - 1]?.days[0]?.day || 1);
+  };
+
+  const selectedExercises = workoutPlan?.progress[selectedWeek - 1]?.days.find((day) => day.day === selectedDay)?.exercises || [];
+  const isDayCompleted = selectedExercises.length > 0 && selectedExercises.every((ex) => completedExercises.has(ex.name));
+
+  if (!workoutPlan) {
+    return <div>Loading...</div>;
+  }
 
   return (
-    <div className="min-h-screen bg-background min-w-full">
+    <div className="min-h-screen bg-background">
       <PageHeader />
-      <main className="container py-6 min-w-full px-5">
+      <main className="container mx-auto py-6 px-4">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
-          <div className="flex justify-between items-center">
+          {/* Header */}
+          <div className="flex justify-between items-center bg-black text-white p-6 rounded-lg">
             <div>
-              <h1 className="text-2xl font-bold">Keep pushing, {process.env.NEXT_PUBLIC_USER_NAME || "Champion"}!</h1>
-              <p className="text-muted-foreground">"The only bad workout is the one that didn't happen."</p>
+              <h1 className="text-2xl font-bold">Keep pushing, John!</h1>
+              <p className="text-gray-300">"The only bad workout is the one that didn't happen."</p>
             </div>
             <div className="text-right">
-              <h2 className="text-xl font-semibold">Week {workoutPlan.currentWeek}</h2>
-              <p className="text-muted-foreground">Day {workoutPlan.currentDay} of 7</p>
+              <h2 className="text-xl font-semibold">Week {selectedWeek}</h2>
+              <p className="text-gray-300">Day {selectedDay} of {workoutPlan.progress[selectedWeek - 1]?.days.length || 0}</p>
             </div>
           </div>
 
           {/* Week Progress */}
-          <div className="flex gap-4 overflow-x-auto pb-2 min-w-full">
+          <div className="flex gap-4 overflow-x-auto pb-4">
             {workoutPlan.progress.map((week) => (
-              <Button
+              <div
                 key={week.week}
-                variant={week.status === "in-progress" ? "default" : "outline"}
-                className="min-w-[100px]"
+                className={`min-w-[120px] p-4 rounded-lg transition-transform duration-300 transform hover:scale-105 hover:shadow-lg ${
+                  selectedWeek === week.week
+                    ? "bg-black text-white"
+                    : week.status === "completed"
+                    ? "bg-white border border-gray-200"
+                    : "bg-white border border-gray-200"
+                }`}
+                onClick={() => handleWeekClick(week.week)}
               >
-                Week {week.week}
-                <br />
-                <span className="text-xs">
+                <div className="text-sm">Week {week.week}</div>
+                <div className="text-xs mt-1">
                   {week.status === "completed"
                     ? "Completed"
                     : week.status === "in-progress"
-                      ? "In Progress"
-                      : "Upcoming"}
-                </span>
-              </Button>
+                    ? "In Progress"
+                    : "Upcoming"}
+                </div>
+              </div>
             ))}
           </div>
 
           {/* Daily Workouts */}
-        
-
- <div className="grid gap-4 md:grid-cols-4">
-  {/* {workoutPlan.progress[2].days.map((day) => {
-    const dayExercises = exerciseData[day.day] || [];
-    const completedExercisesCount = completedExercisesByDay[day.day]?.size || 0;
-    const allExercisesCompleted = dayExercises.length > 0 && completedExercisesCount === dayExercises.length;
-
-    return (
-      <Card key={day.day} onClick={() => handleDayClick(day)} className={allExercisesCompleted ? "border-green-500" : "border-primary"}>
-        <CardContent className="p-4">
-          <div className="flex justify-between items-start mb-2">
-            <div>
-              <h3 className="font-semibold">Day {day.day} </h3>
-              <p className="text-sm text-muted-foreground">{day.type}</p>
-            </div>
-            {allExercisesCompleted ? <Check className="text-green-500" /> : <Clock className="text-blue-500" />}
-              console.log("Day:", day.day, "Exercises:", dayExercises, "Completed:", completedExercisesByDay[day.day]);  
-
+          <div className="grid gap-4 md:grid-cols-4">
+            {workoutPlan.progress[selectedWeek - 1].days.map((day) => (
+              <Card
+                key={day.day}
+                className={`border ${
+                  selectedDay === day.day ? "border-black" : "border-gray-200"
+                } cursor-pointer hover:border-black transition-all duration-300 hover:shadow-lg`}
+                onClick={() => setSelectedDay(day.day)}
+              >
+                <CardContent className="p-4">
+                  <div className="flex justify-between items-start mb-2">
+                    <div>
+                      <h3 className="font-semibold">Day {day.day}</h3>
+                      <p className="text-sm text-muted-foreground">{day.type}</p>
+                    </div>
+                    {day.status === "completed" ? (
+                      <Check className="text-green-500" />
+                    ) : day.status === "in-progress" ? (
+                      <Clock className="text-blue-500" />
+                    ) : null}
+                  </div>
+                  <div className="space-y-1 text-sm text-muted-foreground">
+                    <p>{day.exercises.length} exercises</p>
+                    <p>{day.duration} minutes</p>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
           </div>
-          <div className="space-y-1 text-sm text-muted-foreground">
-            <p>{day.exercises} exercises</p>
-            <p>{day.duration} minutes</p>
-          </div>
-        </CardContent>
-      </Card>
-    );
-  })} */}
-  {workoutPlan.progress[0].days.map((day) => {
-  const dayExercises = exerciseData[day.day] || [];
-  const completedExercisesCount = completedExercisesByDay[day.day]?.size || 0;
-  const allExercisesCompleted = dayExercises.length > 0 && completedExercisesCount === dayExercises.length;
-    
 
-
-  return (
-    <Card key={day.day} onClick={() => handleDayClick(day)} className={allExercisesCompleted ? "border-green-500" : "border-primary"}>
-      <CardContent className="p-4">
-        <div className="flex justify-between items-start mb-2">
+          {/* Selected Day's Workout */}
           <div>
-            <h3 className="font-semibold">Day {day.day}</h3>
-            <p className="text-sm text-muted-foreground">{day.type}</p>
-          </div>
-          {/* {allExercisesCompleted ? <Check className="text-green-500" /> : <Clock className="text-blue-500" />} */}
-          {isDayCompleted(day) ? (
-  <Check className="text-green-500" />
-) : (
-  <Clock className="text-blue-500" />
-)}
-        </div>
-        <div className="space-y-1 text-sm text-muted-foreground">
-          <p>{dayExercises.length} exercises</p>
-        </div>
-      </CardContent>
-    </Card>
-  );
-})}
-
-</div> 
-
-
-    {/* Today's Workout (Now updates based on selected day) */}
-    <div>
-            <h2 className="text-xl font-semibold mb-4">Today's Workout</h2>
+            <h2 className="text-xl font-semibold mb-4">Day {selectedDay} Workout</h2>
             <div className="space-y-4">
-              {selectedDayExercises.map((exercise) => (
-                <Card key={exercise.id} className={completedExercises.has(exercise.id) ? "bg-muted" : ""}>
+              {selectedExercises.map((exercise) => (
+                <Card key={exercise.name} className={completedExercises.has(exercise.name) ? "bg-muted" : ""}>
                   <CardContent className="p-4">
                     <div className="flex gap-4">
-                      <div className="h-20 w-20 rounded-md bg-muted">{/* Exercise image would go here */}</div>
+                      <Image
+                        src={exercise.imageUrl || "/fit.jpeg"}
+                        alt={exercise.name}
+                        width={80}
+                        height={80}
+                        className="rounded-md object-cover"
+                      />
                       <div className="flex-1">
                         <div className="flex justify-between items-start">
                           <div>
@@ -300,8 +235,12 @@ setCompletedExercisesByDay((prev) => {
                               {exercise.sets} sets × {exercise.reps} reps
                             </p>
                           </div>
-                          <Button variant="ghost" size="sm" onClick={() => toggleExercise(exercise.id)}>
-                            {completedExercises.has(exercise.id) ? "Undo" : "Complete"}
+                          <Button
+                            variant={completedExercises.has(exercise.name) ? "outline" : "ghost"}
+                            size="sm"
+                            onClick={() => toggleExercise(exercise.name)}
+                          >
+                            {completedExercises.has(exercise.name) ? <Check className="w-4 h-4" /> : "Complete"}
                           </Button>
                         </div>
                         <div className="flex gap-2 mt-2">
@@ -318,23 +257,19 @@ setCompletedExercisesByDay((prev) => {
               ))}
             </div>
           </div>
-        
+
           {/* Progress Footer */}
           <div className="flex justify-between items-center pt-4 border-t">
             <div className="space-y-1">
               <div className="text-sm text-muted-foreground">{workoutPlan.streak} day streak</div>
               <div className="text-sm text-muted-foreground">{workoutPlan.totalWorkouts} workouts completed</div>
             </div>
-            <Button size="lg" className="bg-green-600 hover:bg-green-700">
+            <Button size="lg" className="bg-black hover:bg-gray-800 text-white">
               Start Workout
             </Button>
           </div>
         </motion.div>
       </main>
     </div>
-  )
+  );
 }
-
-
-
-
