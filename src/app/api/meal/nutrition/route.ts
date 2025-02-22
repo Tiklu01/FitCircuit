@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { connectDB } from "@/db";
 import { MealPlan } from "@/models/meal.model";
 import { MealPreference } from "@/models/mealpreference.model";
@@ -5,7 +6,6 @@ import { User } from "@/models/user.model";
 import { NextRequest, NextResponse } from "next/server";
 import { getAuth } from "@clerk/nextjs/server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import { WorkoutPreference } from "@/models/workoutpreference.model";
 
 export async function GET(req: NextRequest) {
   await connectDB(); // Ensure MongoDB is connected
