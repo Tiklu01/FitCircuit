@@ -41,7 +41,25 @@ interface WorkoutPlanResponse {
   weeks: Week[];
 }
 
-
+export async function GET(req: NextRequest) {
+  await connectDB();
+  const authObject = getAuth(req);
+  if (!authObject.userId) {
+    return NextResponse.json(
+      { message: "User not authenticated" },
+      { status: 401 }
+    );
+  }
+  const user = await User.findOne({ clerkUserId: authObject.userId });
+  if (!user) {
+    return NextResponse.json({ message: "User not found" }, { status: 404 });
+  }
+  const workoutPlan = await WorkoutPlan.findOne({ userId: user._id });
+  if (!workoutPlan) {   
+    return NextResponse.json({ message: "Workout plan not found" }, { status: 404 });
+  }
+  return NextResponse.json({ workoutPlan: workoutPlan.weeks }, { status: 200 });
+}
 export async function POST(req: NextRequest) {
   await connectDB();
   const authObject = getAuth(req);
