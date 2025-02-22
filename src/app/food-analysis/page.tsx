@@ -132,11 +132,11 @@ export default function FoodAnalysis() {
 
                 <div>
                   <h3 className="text-base text-gray-500 mb-4">Nutritional Information</h3>
-                  <div className="grid grid-cols-2 gap-y-4">
-                    <div className="flex justify-between"><span>Calories</span><span>{foodData.nutritional_information.calories}</span></div>
-                    <div className="flex justify-between"><span>Protein</span><span>{foodData.nutritional_information.protein}</span></div>
-                    <div className="flex justify-between"><span>Carbs</span><span>{foodData.nutritional_information.carbohydrates}</span></div>
-                    <div className="flex justify-between"><span>Fat</span><span>{foodData.nutritional_information.fats}</span></div>
+                  <div className="flex flex-col gap-2">
+                    <div className="flex justify-between"><span>Calories:</span><span>{foodData.nutritional_information.calories}</span></div>
+                    <div className="flex justify-between"><span>Protein:</span><span>{foodData.nutritional_information.protein}</span></div>
+                    <div className="flex justify-between"><span>Carbs:</span><span>{foodData.nutritional_information.carbohydrates}</span></div>
+                    <div className="flex justify-between"><span>Fat:</span><span>{foodData.nutritional_information.fats}</span></div>
                   </div>
                 </div>
 
