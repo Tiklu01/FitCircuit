@@ -1,52 +1,29 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @next/next/no-img-element */
 "use client"
 
 import type React from "react"
-
-import { useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { Camera, Check } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import { Doughnut } from "react-chartjs-2"
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js"
+import { PageHeader } from "@/components/ui/page-header"
 
-// Register Chart.js components
 ChartJS.register(ArcElement, Tooltip, Legend)
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-interface NutritionalInfo {
-  calories: number
-  protein: number
-  carbs: number
-  fat: number
-}
 
 export default function FoodAnalysis() {
   const [uploading, setUploading] = useState(false)
+  const [loading, setLoading] = useState(false)
   const [uploadedUrl, setUploadedUrl] = useState<string | null>(null)
-  const [weight, setWeight] = useState<string>("")
+  const [foodData, setFoodData] = useState<any>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
-  const chartData = {
-    labels: ["Protein", "Carbs", "Fat"],
-    datasets: [
-      {
-        data: [42, 12, 46],
-        backgroundColor: ["#818CF8", "#4ADE80", "#F59E0B"],
-        borderWidth: 0,
-      },
-    ],
-  }
-
-  const chartOptions = {
-    plugins: {
-      legend: {
-        display: false,
-      },
-    },
-    cutout: "60%",
-    responsive: true,
-    maintainAspectRatio: true,
-  }
+  useEffect(() => {
+    if (foodData) {
+      console.log("Fetched Data:", foodData)
+    }
+  }, [foodData])
 
   const handleButtonClick = () => {
     fileInputRef.current?.click()
@@ -60,155 +37,132 @@ export default function FoodAnalysis() {
     formData.append("file", file)
 
     setUploading(true)
+    setLoading(true) // Start loading animation
 
     try {
-      const res = await fetch("/api/upload", {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/meal/analysis`, {
         method: "POST",
         body: formData,
       })
 
       const data = await res.json()
-
-      if (data.success && data.imageUrl) {
-        setUploadedUrl(data.imageUrl)
-      } else {
-        console.error("Upload response missing imageUrl:", data)
-      }
+      setFoodData(data.jsonResponse)
+      setUploadedUrl(data.imagePart)
     } catch (error) {
       console.error("Upload failed:", error)
     } finally {
       setUploading(false)
+      setLoading(false) // Stop loading animation
     }
   }
 
+  const chartData = foodData
+    ? {
+        labels: ["Protein", "Carbs", "Fat"],
+        datasets: [
+          {
+            data: [
+              parseInt(foodData.nutritional_information.protein),
+              parseInt(foodData.nutritional_information.carbohydrates),
+              parseInt(foodData.nutritional_information.fats),
+            ],
+            backgroundColor: ["#818CF8", "#4ADE80", "#F59E0B"],
+            borderWidth: 0,
+          },
+        ],
+      }
+    : null
+
   return (
     <div className="min-h-screen bg-gray-50 p-6">
-      <h1 className="text-2xl font-bold mb-6">Food Analysis</h1>
+      <PageHeader />
+      <h1 className="text-2xl font-bold mb-6 py-4">Food Analysis</h1>
 
       <div className="grid gap-6 md:grid-cols-2">
-        {/* Left Side */}
         <div className="space-y-6">
-          {/* Custom Quantity */}
           <div className="bg-white p-6 rounded-2xl shadow-sm">
-            <h2 className="text-lg font-semibold mb-4">Custom Quantity (g)</h2>
-            <Input
-              type="number"
-              placeholder="Enter weight in grams"
-              value={weight}
-              onChange={(e) => setWeight(e.target.value)}
-              className="w-full mb-4 rounded-lg"
-            />
-            <Button className="w-full bg-black hover:bg-gray-800 rounded-lg">Analyze</Button>
-          </div>
-
-          {/* Image Upload */}
-          <div className="bg-white p-6 rounded-2xl shadow-sm">
+            <h2 className="text-lg font-semibold mb-4">Upload Image</h2>
             <div className="flex flex-col items-center justify-center p-8 border-2 border-dashed rounded-xl">
               <Camera className="h-8 w-8 mb-4 text-gray-400" />
               <p className="mb-4 text-sm text-gray-500">Upload your meal photo</p>
               <input type="file" accept="image/*" ref={fileInputRef} className="hidden" onChange={handleFileChange} />
               <Button variant="outline" onClick={handleButtonClick} disabled={uploading} className="rounded-lg">
-                Select Image
+                {uploading ? "Uploading..." : "Select Image"}
               </Button>
-              {uploadedUrl && (
-                <img
-                  src={uploadedUrl || "/placeholder.svg"}
-                  alt="Uploaded meal"
-                  className="mt-4 w-40 h-40 object-cover rounded-lg"
-                />
-              )}
+              {uploadedUrl && <img src={uploadedUrl} alt="Uploaded meal" className="mt-4 w-40 h-40 object-cover rounded-lg" />}
             </div>
           </div>
 
-          {/* Macro Distribution */}
-          <div className="bg-white p-6 rounded-2xl shadow-sm">
+          {/* Chart with Fixed Size */}
+          <div className="bg-white p-6 rounded-2xl shadow-sm max-w-full">
             <h2 className="text-lg font-semibold mb-4">Macro Distribution</h2>
-            <div className="w-48 h-48 mx-auto mb-4">
-              <Doughnut data={chartData} options={chartOptions} />
-            </div>
-            <div className="grid grid-cols-3 text-center gap-4">
-              <div>
-                <div className="font-semibold">Protein</div>
-                <div className="text-gray-500">42%</div>
-              </div>
-              <div>
-                <div className="font-semibold">Carbs</div>
-                <div className="text-gray-500">12%</div>
-              </div>
-              <div>
-                <div className="font-semibold">Fat</div>
-                <div className="text-gray-500">46%</div>
-              </div>
-            </div>
+            <div className="flex-col w-[350px] h-[350px] mx-auto">
+            {loading ? (
+              <div className="w-48 h-48 mx-auto bg-gray-200 rounded-full animate-pulse"></div>
+            ) : (
+              chartData && <Doughnut data={chartData} width={200} height={200} />
+            )}
           </div>
+            </div>
+           
         </div>
 
-        {/* Right Side */}
+        {/* Skeleton Loader for Analysis Result */}
         <div className="bg-white p-6 rounded-2xl shadow-sm">
           <h2 className="text-lg font-semibold mb-6">Analysis Result</h2>
-
-          <div className="space-y-8">
-            {/* Food Identification */}
-            <div>
-              <h3 className="text-base text-gray-500 mb-2">Food Identification</h3>
-              <h4 className="text-xl font-semibold mb-1">Grilled Chicken Salad</h4>
-              <p className="text-gray-500">Estimated Weight: 320g</p>
+          {loading ? (
+            <div className="space-y-6">
+              <div className="h-6 bg-gray-200 rounded animate-pulse w-1/2"></div>
+              <div className="h-4 bg-gray-200 rounded animate-pulse w-3/4"></div>
+              <div className="h-4 bg-gray-200 rounded animate-pulse w-1/2"></div>
+              <div className="h-4 bg-gray-200 rounded animate-pulse w-2/3"></div>
             </div>
+          ) : (
+            foodData && (
+              <div className="space-y-6">
+                <div>
+                  <h3 className="text-base text-gray-500 mb-2">Food Identification</h3>
+                  {foodData.food_identification.map((item: any, index: number) => (
+                    <div key={index} className="mb-2">
+                      <h4 className="text-xl font-semibold">{item.item}</h4>
+                      <p className="text-gray-500">Estimated Weight: {item.estimated_weight}</p>
+                    </div>
+                  ))}
+                </div>
 
-            {/* Nutritional Information */}
-            <div>
-              <h3 className="text-base text-gray-500 mb-4">Nutritional Information</h3>
-              <div className="grid grid-cols-2 gap-y-4">
-                <div className="flex items-center justify-between pr-4">
-                  <span className="text-gray-600">Calories</span>
-                  <span className="font-semibold">380 kcal</span>
+                <div>
+                  <h3 className="text-base text-gray-500 mb-4">Nutritional Information</h3>
+                  <div className="grid grid-cols-2 gap-y-4">
+                    <div className="flex justify-between"><span>Calories</span><span>{foodData.nutritional_information.calories}</span></div>
+                    <div className="flex justify-between"><span>Protein</span><span>{foodData.nutritional_information.protein}</span></div>
+                    <div className="flex justify-between"><span>Carbs</span><span>{foodData.nutritional_information.carbohydrates}</span></div>
+                    <div className="flex justify-between"><span>Fat</span><span>{foodData.nutritional_information.fats}</span></div>
+                  </div>
                 </div>
-                <div className="flex items-center justify-between pr-4">
-                  <span className="text-gray-600">Protein</span>
-                  <span className="font-semibold">42g</span>
+
+                <div>
+                  <h3 className="text-base text-gray-500 mb-4">Ingredients</h3>
+                  {foodData.recipe.ingredients.map((ingredient: any, index: number) => (
+                    <div key={index} className="flex items-center gap-2">
+                      <Check className="h-4 w-4 text-gray-400" />
+                      <span>{ingredient.name} - {ingredient.quantity}</span>
+                    </div>
+                  ))}
                 </div>
-                <div className="flex items-center justify-between pr-4">
-                  <span className="text-gray-600">Carbs</span>
-                  <span className="font-semibold">12g</span>
-                </div>
-                <div className="flex items-center justify-between pr-4">
-                  <span className="text-gray-600">Fat</span>
-                  <span className="font-semibold">18g</span>
+
+                <div>
+                  <h3 className="text-base text-gray-500 mb-4">Recipe Instructions</h3>
+                  <ol className="list-decimal pl-6">
+                    {foodData.recipe.instructions.map((step: string, index: number) => (
+                      <li key={index} className="mb-2">{step}</li>
+                    ))}
+                  </ol>
                 </div>
               </div>
-            </div>
-
-            {/* Ingredients */}
-            <div>
-              <h3 className="text-base text-gray-500 mb-4">Ingredients</h3>
-              <div className="grid grid-cols-2 gap-y-3">
-                <div className="flex items-center gap-2">
-                  <Check className="h-4 w-4 text-gray-400" />
-                  <span className="text-gray-600">Grilled Chicken Breast</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Check className="h-4 w-4 text-gray-400" />
-                  <span className="text-gray-600">Mixed Lettuce</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Check className="h-4 w-4 text-gray-400" />
-                  <span className="text-gray-600">Cherry Tomatoes</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Check className="h-4 w-4 text-gray-400" />
-                  <span className="text-gray-600">Olive Oil Dressing</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Nutritional Breakdown */}
-            <div>
-              <h3 className="text-base text-gray-500">Nutritional Breakdown</h3>
-            </div>
-          </div>
+            )
+          )}
         </div>
       </div>
     </div>
   )
 }
-
