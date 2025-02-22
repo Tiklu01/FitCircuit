@@ -1,6 +1,5 @@
 import { connectDB } from "@/db";
 import { MealPlan } from "@/models/meal.model";
-import { MealPreference } from "@/models/mealpreference.model";
 import { User } from "@/models/user.model";
 import { NextRequest, NextResponse } from "next/server";
 import { getAuth } from "@clerk/nextjs/server";
@@ -25,7 +24,6 @@ export async function GET(req: NextRequest) {
       { status: 404 }
     );
   } 
-  console.log(mealPlan);
   return NextResponse.json(
     { mealPlan: mealPlan.days , message: "Meal plan retrieved successfully" },
     { status: 200 }
