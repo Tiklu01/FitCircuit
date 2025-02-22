@@ -28,7 +28,7 @@ export async function POST(req: NextRequest) {
     goal,
     caloricIntakeGoal,
     mealCountPreference,
-    dietaryRestrictions,
+    restrictions,
     allergies,
     bmi, 
     height,
@@ -40,7 +40,7 @@ export async function POST(req: NextRequest) {
     goal,
     caloricIntakeGoal,
     mealCountPreference,
-    dietaryRestrictions,
+    restrictions,
     allergies,
     bmi,
     height,
@@ -69,58 +69,93 @@ if (!updatedMealPreference) {
 
   // ✅ Updated prompt for structured response
   const promptmeal = `
-Generate a structured meal prep plan for ${duration} days based on the user's inputs. Ensure the diet plan aligns with their **fitness and health goals**, taking into account meal preferences, dietary restrictions, and workout intensity.
+Create a **personalized meal plan** for ${duration} days, considering the user's **BMI, weight, height, dietary restrictions, and fitness goals**. The plan should guide them on how their meals contribute to achieving their target (weight loss, muscle gain, or maintenance).
 
-### **User Inputs:**
-- **Caloric Intake Goal:** ${caloricIntakeGoal}
-- **Meal Count Preference:** ${mealCountPreference}
-- **Dietary Restrictions:** ${
-    dietaryRestrictions ? dietaryRestrictions : "None"
+### *Requirements:*
+-- Should complete the json and provide all the items in the json it is required
+-- Don't keep the json empty generate the full json
+
+### **User Profile:**
+- **Current Weight:** ${weight} kg
+- **Height:** ${height} cm
+- **BMI:** ${bmi}
+- **Fitness Goal:** ${goal} (e.g., weight loss, muscle gain, maintenance)
+- **Meal Count Per Day:** ${mealCountPreference}
+- **Dietary Restrictions (Includes Allergies):** ${
+    restrictions ? restrictions : "None"
   }
-- **Allergies:** ${allergies ? allergies : "None"}
-- **Goal:** ${goal}
+
 ---
-- **Meal Type:** enum: [
-            'Early Morning', 'Breakfast', 'Mid-Morning Snack', 'Lunch',
-            'Afternoon Snack', 'Pre-Workout Meal', 'Post-Workout Meal', 'Dinner'
-        ] -> choose the meals based on the meal count preference
-### **Output Format:**
-Return the meal prep plan in **JSON format** with the following structure:
+
+### **Meal Plan Output Format:**
+Generate a structured **JSON response** with the following format:
 
 \`\`\`json
 {
   "days": [
     {
       "day": 1,
+      "total_calories": "Calories to consume today based on goal",
+      "caloric_breakdown": {
+        "protein": "Target protein intake (g)",
+        "carbohydrates": "Target carbohydrate intake (g)",
+        "fats": "Target fat intake (g)"
+      },
       "meals": [
         {
-          "type": "Meal Type",
+          "meal_type": "Meal Type (Breakfast, Lunch, etc.)",
           "name": "Meal Name",
-          "description": "Short description of the meal",
-          "nutritionalValues": {
+          "ingredients": [
+            {
+              "name": "Ingredient Name",
+              "quantity": "Amount (grams, cups, etc.)"
+            }
+          ],
+          "instructions": "Step-by-step cooking instructions",
+          "prep_time": "Preparation Time",
+          "cook_time": "Cooking Time",
+          "calories_per_meal": "Calories per serving",
+          "macros": {
             "protein": "Protein content (g)",
-            "carbs": "Carbohydrate content (g)",
-            "fats": "Fat content (g)",
-            "calories": "Calories per serving"
-          }
+            "carbohydrates": "Carbohydrate content (g)",
+            "fats": "Fat content (g)"
+          },
+          "benefit": "How this meal helps user achieve their goal"
         }
       ],
-      "totalCalories": "Total calories for the day",
-      "totalProtein": "Total protein intake (g)",
-      "totalCarbs": "Total carbohydrate intake (g)",
-      "totalFats": "Total fat intake (g)"
+      "daily_guidance": "Tips on how this day's meal plan helps achieve the goal"
     }
   ]
 }
 \`\`\`
 
-### **Guidelines:**
-- Ensure **meal selection aligns with dietary preferences, allergies, and restrictions**.
-- The meal plan should **support the user's fitness goals** (e.g., high protein for muscle gain, calorie deficit for weight loss).
-- Consider **workout intensity and session length** to adjust meal portion sizes and macros accordingly.
-- Return only a valid JSON response with no additional text.
-`;
+---
 
+### **Guidelines for Meal Plan Generation:**
+1. **Caloric Intake Calculation:**  
+   - If the goal is **weight loss**, recommend a slight **caloric deficit** based on BMI.  
+   - If the goal is **muscle gain**, suggest a **caloric surplus** with **higher protein intake**.  
+   - If the goal is **maintenance**, balance macronutrients accordingly.
+
+2. **Meal Selection:**  
+   - Ensure meals align with the **user’s dietary restrictions** (including allergies).  
+   - Suggest meals with **balanced macronutrients** to optimize fitness results.
+
+3. **Daily Guidance:**  
+   - Provide brief explanations on **why each meal is chosen** and **how it helps the user reach their goal**.  
+   - If the user aims for **weight loss**, explain how the meal keeps them in a deficit while maintaining energy.  
+   - If the goal is **muscle gain**, indicate how the meal supports muscle recovery and growth.
+
+4. **Step-by-step Meal Prep:**  
+   - Include detailed **cooking instructions** for each meal.  
+   - Provide **prep time & cook time** to help with planning.  
+
+---
+
+### **Output Requirements:**
+- Return **only** the structured JSON response.
+- Do **not** include extra explanations or text outside the JSON.
+`;
   // Call Gemini API
   const generatedContent = await model.generateContent(promptmeal);
   const responseText = await generatedContent.response.text();
