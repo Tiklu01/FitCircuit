@@ -28,7 +28,7 @@ export async function POST(req: NextRequest) {
     goal,
     caloricIntakeGoal,
     mealCountPreference,
-    restrictions,
+    dietaryRestrictions,
     allergies,
     bmi, 
     height,
@@ -40,7 +40,7 @@ export async function POST(req: NextRequest) {
     goal,
     caloricIntakeGoal,
     mealCountPreference,
-    restrictions,
+    dietaryRestrictions,
     allergies,
     bmi,
     height,
@@ -82,7 +82,7 @@ Create a **personalized meal plan** for ${duration} days, considering the user's
 - **Fitness Goal:** ${goal} (e.g., weight loss, muscle gain, maintenance)
 - **Meal Count Per Day:** ${mealCountPreference}
 - **Dietary Restrictions (Includes Allergies):** ${
-    restrictions ? restrictions : "None"
+    dietaryRestrictions ? dietaryRestrictions : "None"
   }
 
 ---
