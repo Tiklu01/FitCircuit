@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
 import { motion } from "framer-motion"
@@ -231,7 +232,7 @@ export default function NutritionPage() {
                     <CardContent className="p-0">
                       <div className="grid md:grid-cols-[1fr_2fr_1fr]">
                         <div className="relative aspect-square">
-                          <Image src="/fit.jpeg" alt={meal.name} fill className="object-cover" />
+                          <Image src="/vercel.svg" alt={meal.name} fill className="object-cover" />
                         </div>
                         <div className="p-6 border-r">
                           <div className="space-y-3">
