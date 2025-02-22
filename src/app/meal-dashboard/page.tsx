@@ -1,182 +1,239 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Flame, CheckCircle, Dumbbell, Scale } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, ArcElement, Tooltip } from "chart.js"
-import { Line, Doughnut } from "react-chartjs-2"
+import { useState, useEffect } from "react";
+import { Flame, CheckCircle, Dumbbell, Scale } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, ArcElement, Tooltip } from "chart.js";
+import { Line, Doughnut } from "react-chartjs-2";
+import { PageHeader } from "@/components/ui/page-header";
 
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, ArcElement, Tooltip)
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, ArcElement, Tooltip);
 
-export default function WeeklyMealOverview() {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [currentWeekStart] = useState(new Date(2024, 1, 19))
-
-  return (
-    <div className="container mx-auto p-6 max-w-[1400px]">
-      <div className="flex justify-between items-start mb-8">
-        <div>
-          <h1 className="text-2xl font-semibold mb-1">Weekly Meal Overview</h1>
-          <p className="text-gray-600">February 19 - February 25, 2024</p>
-        </div>
-        <div className="flex gap-3">
-          <Button variant="outline" size="sm">
-            ← Previous Week
-          </Button>
-          <Button variant="default" size="sm">
-            Next Week →
-          </Button>
-        </div>
-      </div>
-
-      <div className="grid gap-4 md:grid-cols-4 mb-8">
-        <Card className="p-4">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-orange-50 rounded-full flex items-center justify-center">
-              <Flame className="h-4 w-4 text-orange-500" />
-            </div>
-            <div>
-              <div className="text-sm text-gray-600">Avg. Daily Calories</div>
-              <div className="text-xl font-semibold">2,145 kcal</div>
-            </div>
-          </div>
-        </Card>
-
-        <Card className="p-4">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-green-50 rounded-full flex items-center justify-center">
-              <CheckCircle className="h-4 w-4 text-green-500" />
-            </div>
-            <div>
-              <div className="text-sm text-gray-600">Plan Compliance</div>
-              <div className="text-xl font-semibold">92%</div>
-            </div>
-          </div>
-        </Card>
-
-        <Card className="p-4">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-blue-50 rounded-full flex items-center justify-center">
-              <Dumbbell className="h-4 w-4 text-blue-500" />
-            </div>
-            <div>
-              <div className="text-sm text-gray-600">Protein Goal</div>
-              <div className="text-xl font-semibold">156g / 180g</div>
-            </div>
-          </div>
-        </Card>
-
-        <Card className="p-4">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-yellow-50 rounded-full flex items-center justify-center">
-              <Scale className="h-4 w-4 text-yellow-500" />
-            </div>
-            <div>
-              <div className="text-sm text-gray-600">Macro Balance</div>
-              <div className="text-xl font-semibold">Optimal</div>
-            </div>
-          </div>
-        </Card>
-      </div>
-
-      <div className="grid gap-4 grid-cols-7 mb-8">
-        {DAYS.map((day, index) => (
-          <DayCard key={index} {...day} />
-        ))}
-      </div>
-
-      <div>
-        <h2 className="text-xl font-semibold mb-6">Detailed Day View</h2>
-        <div className="grid grid-cols-2 gap-8">
-          <div>
-            <div className="flex items-center gap-2 mb-4">
-              <span className="text-yellow-500">☀️</span>
-              <h3 className="font-medium">Breakfast</h3>
-              <span className="text-gray-500 text-sm">8:00 AM</span>
-            </div>
-            <div className="bg-gray-50 p-4 rounded-lg">
-              <div className="font-medium mb-2">Oatmeal with Fruits</div>
-              <div className="grid grid-cols-4 gap-4 text-sm text-gray-600">
-                <div>320 kcal</div>
-                <div>P: 12g</div>
-                <div>C: 45g</div>
-                <div>F: 8g</div>
-              </div>
-            </div>
-          </div>
-
-          <div className="grid gap-8">
-            <div>
-              <h3 className="font-medium mb-4">Daily Macro Distribution</h3>
-              <div className="h-[200px]">
-                <Doughnut
-                  data={macroData}
-                  options={{
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    cutout: "75%",
-                    plugins: {
-                      legend: {
-                        position: "bottom",
-                        labels: {
-                          boxWidth: 12,
-                          padding: 15,
-                        },
-                      },
-                    },
-                  }}
-                />
-              </div>
-            </div>
-
-            <div>
-              <h3 className="font-medium mb-4">Weekly Calorie Trend</h3>
-              <div className="h-[200px]">
-                <Line
-                  data={calorieData}
-                  options={{
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                      y: {
-                        min: 0,
-                        max: 2500,
-                        ticks: {
-                          stepSize: 500,
-                        },
-                      },
-                    },
-                    plugins: {
-                      legend: {
-                        display: false,
-                      },
-                    },
-                  }}
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  )
+interface Meal {
+  icon: string;
+  name: string;
 }
 
-function DayCard({
-  day,
-  date,
-  status,
-  meals,
-  calories,
-}: {
-  day: string
-  date: string
-  status: "On Track" | "Near Goal"
-  meals: { icon: string; name: string }[]
-  calories: number
-}) {
+interface DayData {
+  day: number;
+  meals: Meal[];
+  totalCalories: string;
+  totalProtein: string;
+  totalCarbs: string;
+  totalFats: string;
+}
+
+interface MealAPIResponse {
+  mealPlan: DayData[];
+  message: string;
+}
+
+interface DayCardProps {
+  day: string;
+  date: string;
+  status: "On Track" | "Near Goal";
+  meals: Meal[];
+  calories: number;
+}
+
+export default function WeeklyMealOverview() {
+  const [mealData, setMealData] = useState<DayData[] | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const currentWeekStart = new Date(2024, 1, 19);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/meal`);
+        const data: MealAPIResponse = await response.json();
+        setMealData(data.mealPlan);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching meal data:", error);
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
+
+  if (loading || !mealData) {
+    return <div>Loading...</div>;
+  }
+
+  const calorieData = {
+    labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+    datasets: [
+      {
+        data: mealData.map((day) => Number(day.totalCalories)),
+        borderColor: "#818CF8",
+        backgroundColor: "#818CF8",
+        pointBackgroundColor: "#818CF8",
+        tension: 0.4,
+        borderWidth: 2,
+        pointRadius: 4,
+      },
+    ],
+  };
+
+  const totalMacros = mealData.reduce(
+    (acc, day) => {
+      acc.protein += Number(day.totalProtein);
+      acc.carbs += Number(day.totalCarbs);
+      acc.fats += Number(day.totalFats);
+      return acc;
+    },
+    { protein: 0, carbs: 0, fats: 0 }
+  );
+  const avgProtein = totalMacros.protein / mealData.length;
+  const avgCarbs = totalMacros.carbs / mealData.length;
+  const avgFats = totalMacros.fats / mealData.length;
+  const totalAvg = avgProtein + avgCarbs + avgFats;
+  const proteinPercent = Math.round((avgProtein / totalAvg) * 100);
+  const carbsPercent = Math.round((avgCarbs / totalAvg) * 100);
+  const fatsPercent = Math.round((avgFats / totalAvg) * 100);
+
+  const macroData = {
+    labels: ["Protein", "Carbs", "Fats"],
+    datasets: [
+      {
+        data: [proteinPercent, carbsPercent, fatsPercent],
+        backgroundColor: ["#818CF8", "#6EE7B7", "#FCD34D"],
+        borderWidth: 0,
+      },
+    ],
+  };
+
+  const getDayName = (index: number): string => {
+    const dayNames = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+    return dayNames[index] || "";
+  };
+
+  const getDate = (index: number): number => {
+    const date = new Date(currentWeekStart);
+    date.setDate(date.getDate() + index);
+    return date.getDate();
+  };
+
+  const avgDailyCalories = Math.round(
+    mealData.reduce((sum, day) => sum + Number(day.totalCalories), 0) / mealData.length
+  );
+
+  return (
+    <main>
+      <PageHeader />
+      <div className="container mx-auto p-6 max-w-[1400px]">
+        <div className="flex justify-between items-start mb-8">
+          <div>
+            <h1 className="text-2xl font-semibold mb-1">Weekly Meal Overview</h1>
+            <p className="text-gray-600">February 19 - February 25, 2024</p>
+          </div>
+          <div className="flex gap-3">
+            <Button variant="outline" size="sm">← Previous Week</Button>
+            <Button variant="default" size="sm">Next Week →</Button>
+          </div>
+        </div>
+
+        <div className="grid gap-4 md:grid-cols-4 mb-8">
+          <Card className="p-4">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 bg-orange-50 rounded-full flex items-center justify-center">
+                <Flame className="h-4 w-4 text-orange-500" />
+              </div>
+              <div>
+                <div className="text-sm text-gray-600">Avg. Daily Calories</div>
+                <div className="text-xl font-semibold">{avgDailyCalories} kcal</div>
+              </div>
+            </div>
+          </Card>
+
+          <Card className="p-4">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 bg-green-50 rounded-full flex items-center justify-center">
+                <CheckCircle className="h-4 w-4 text-green-500" />
+              </div>
+              <div>
+                <div className="text-sm text-gray-600">Plan Compliance</div>
+                <div className="text-xl font-semibold">92%</div>
+              </div>
+            </div>
+          </Card>
+
+          <Card className="p-4">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 bg-blue-50 rounded-full flex items-center justify-center">
+                <Dumbbell className="h-4 w-4 text-blue-500" />
+              </div>
+              <div>
+                <div className="text-sm text-gray-600">Protein Goal</div>
+                <div className="text-xl font-semibold">156g / 180g</div>
+              </div>
+            </div>
+          </Card>
+
+          <Card className="p-4">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 bg-yellow-50 rounded-full flex items-center justify-center">
+                <Scale className="h-4 w-4 text-yellow-500" />
+              </div>
+              <div>
+                <div className="text-sm text-gray-600">Macro Balance</div>
+                <div className="text-xl font-semibold">Optimal</div>
+              </div>
+            </div>
+          </Card>
+        </div>
+
+        <div className="grid gap-4 grid-cols-7 mb-8">
+          {mealData.map((day, index) => (
+            <DayCard
+              key={index}
+              day={getDayName(index)}
+              date={getDate(index).toString()}
+              status="On Track"
+              meals={day.meals}
+              calories={Number(day.totalCalories)}
+            />
+          ))}
+        </div>
+
+        <div className="grid grid-cols-2 gap-8">
+          <div>
+            <h3 className="font-medium mb-4">Weekly Calorie Trend</h3>
+            <div className="h-[200px]">
+              <Line
+                data={calorieData}
+                options={{
+                  responsive: true,
+                  maintainAspectRatio: false,
+                  scales: { y: { min: 0, max: 2500, ticks: { stepSize: 500 } } },
+                  plugins: { legend: { display: false } },
+                }}
+              />
+            </div>
+          </div>
+          <div>
+            <h3 className="font-medium mb-4">Daily Macro Distribution</h3>
+            <div className="h-[200px]">
+              <Doughnut
+                data={macroData}
+                options={{
+                  responsive: true,
+                  maintainAspectRatio: false,
+                  cutout: "75%",
+                  plugins: { legend: { position: "bottom", labels: { boxWidth: 12, padding: 15 } } },
+                }}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  );
+}
+
+function DayCard({ day, date, status, meals, calories }: DayCardProps) {
   return (
     <Card className="p-4">
       <div className="flex justify-between items-start mb-4">
@@ -198,117 +255,8 @@ function DayCard({
       </div>
       <div className="flex justify-between items-center pt-3 border-t border-gray-200">
         <span className="text-sm text-gray-600">{calories} kcal</span>
-        <Button variant="link" className="text-sm h-auto p-0">
-          View Details
-        </Button>
+        <Button variant="link" className="text-sm h-auto p-0">View Details</Button>
       </div>
     </Card>
-  )
+  );
 }
-
-const DAYS = [
-  {
-    day: "Monday",
-    date: "19",
-    status: "On Track" as const,
-    meals: [
-      { icon: "☀️", name: "Oatmeal & Berries" },
-      { icon: "🍽️", name: "Grilled Chicken Salad" },
-      { icon: "🌙", name: "Salmon & Quinoa" },
-    ],
-    calories: 2090,
-  },
-  {
-    day: "Tuesday",
-    date: "20",
-    status: "On Track" as const,
-    meals: [
-      { icon: "☀️", name: "Protein Pancakes" },
-      { icon: "🍽️", name: "Turkey Wrap" },
-      { icon: "🌙", name: "Steak & Vegetables" },
-    ],
-    calories: 2150,
-  },
-  {
-    day: "Wednesday",
-    date: "21",
-    status: "On Track" as const,
-    meals: [
-      { icon: "☀️", name: "Greek Yogurt Bowl" },
-      { icon: "🍽️", name: "Tuna Salad" },
-      { icon: "🌙", name: "Chicken Stir-Fry" },
-    ],
-    calories: 2180,
-  },
-  {
-    day: "Thursday",
-    date: "22",
-    status: "Near Goal" as const,
-    meals: [
-      { icon: "☀️", name: "Smoothie Bowl" },
-      { icon: "🍽️", name: "Quinoa Buddha Bowl" },
-      { icon: "🌙", name: "Fish Tacos" },
-    ],
-    calories: 2050,
-  },
-  {
-    day: "Friday",
-    date: "23",
-    status: "On Track" as const,
-    meals: [
-      { icon: "☀️", name: "Avocado Toast" },
-      { icon: "🍽️", name: "Poke Bowl" },
-      { icon: "🌙", name: "Tofu Curry" },
-    ],
-    calories: 2120,
-  },
-  {
-    day: "Saturday",
-    date: "24",
-    status: "On Track" as const,
-    meals: [
-      { icon: "☀️", name: "Protein Waffles" },
-      { icon: "🍽️", name: "Chicken Caesar Wrap" },
-      { icon: "🌙", name: "Grilled Steak" },
-    ],
-    calories: 2200,
-  },
-  {
-    day: "Sunday",
-    date: "25",
-    status: "On Track" as const,
-    meals: [
-      { icon: "☀️", name: "Eggs Benedict" },
-      { icon: "🍽️", name: "Mediterranean Bowl" },
-      { icon: "🌙", name: "Baked Salmon" },
-    ],
-    calories: 2170,
-  },
-]
-
-const macroData = {
-  labels: ["Protein", "Carbs", "Fats"],
-  datasets: [
-    {
-      data: [30, 45, 25],
-      backgroundColor: ["#818CF8", "#6EE7B7", "#FCD34D"],
-      borderWidth: 0,
-    },
-  ],
-}
-
-const calorieData = {
-  labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-  datasets: [
-    {
-      data: [2090, 2150, 2180, 2050, 2120, 2200, 2170],
-      borderColor: "#818CF8",
-      backgroundColor: "#818CF8",
-      pointBackgroundColor: "#818CF8",
-      tension: 0.4,
-      borderWidth: 2,
-      pointRadius: 4,
-    },
-  ],
-}
-
