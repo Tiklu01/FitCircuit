@@ -71,187 +71,220 @@ export async function POST(req: NextRequest) {
   }
 
   const {
-    trainingGoal,
-    trainingType,
-    daysPerWeek,
-    desiredResults,
-    fitnessLevel,
-    availableEquipment = [],
-    workoutDuration,
-    weeks,
-    physicalCondition,
+        goal,
+        eventName,
+        bodyMetrics,
+        programDuration,
+        equipment,
+        sessionLength,
+        weeklyFrequency,
+        noRestDays,
+        intensityLevel,
+        healthConsiderations,
+        additionalDetails,
   } = workoutPreference;
 
   const exerciseList = [
     "Push-ups",
     "Squats",
     "Lunges",
-    "Burpees",
     "Plank",
-    "Jumping Jacks",
-    "Mountain Climbers",
-    "Sit-ups",
-    "Bicycle Crunches",
-    "Wall Sit",
-    "Triceps Dips (using a bench)",
-    "Calf Raises",
-    "Glute Bridges",
-    "Superman Hold",
-    "Side Plank",
-    "Flutter Kicks",
-    "High Knees",
-    "Bear Crawl",
-    "Donkey Kicks",
-    "Step-ups",
-    "Dumbbell Bench Press",
-    "Dumbbell Shoulder Press",
-    "Dumbbell Bicep Curls",
-    "Dumbbell Triceps Kickback",
-    "Dumbbell Deadlift",
-    "Dumbbell Goblet Squat",
-    "Dumbbell Bent-over Row",
-    "Dumbbell Lateral Raises",
-    "Dumbbell Front Raises",
-    "Dumbbell Hammer Curls",
-    "Dumbbell Shrugs",
-    "Dumbbell Bulgarian Split Squats",
-    "Dumbbell Farmers Walk",
-    "Dumbbell Reverse Fly",
-    "Dumbbell Romanian Deadlift",
-    "Dumbbell Chest Fly",
-    "Dumbbell Step-ups",
-    "Dumbbell Clean and Press",
-    "Dumbbell Overhead Triceps Extension",
-    "Dumbbell Side Lunge",
-    "Barbell Back Squat",
-    "Barbell Deadlift",
-    "Barbell Bench Press",
-    "Barbell Overhead Press",
-    "Barbell Bent-over Row",
-    "Barbell Front Squat",
-    "Barbell Romanian Deadlift",
-    "Barbell Hip Thrust",
-    "Barbell Clean and Jerk",
-    "Barbell Snatch",
-    "Kettlebell Swings",
-    "Kettlebell Goblet Squat",
-    "Kettlebell Deadlift",
-    "Kettlebell Turkish Get-up",
-    "Kettlebell Clean and Press",
-    "Kettlebell Snatch",
-    "Kettlebell Windmill",
-    "Kettlebell Row",
-    "Kettlebell Front Rack Squat",
-    "Kettlebell Lunges",
-    "Resistance Band Squats",
-    "Resistance Band Deadlifts",
-    "Resistance Band Shoulder Press",
-    "Resistance Band Lateral Walks",
-    "Resistance Band Bicep Curls",
-    "Resistance Band Triceps Extensions",
-    "Resistance Band Rows",
-    "Resistance Band Chest Press",
-    "Resistance Band Kickbacks",
-    "Resistance Band Face Pulls",
-    "Lat Pulldown",
-    "Seated Row Machine",
+    "Burpees",
+    "Deadlifts",
+    "Bench Press",
+    "Pull-ups",
+    "Overhead Press",
+    "Rows",
+    "Bicep Curls",
+    "Tricep Dips",
     "Leg Press",
-    "Leg Curl Machine",
-    "Leg Extension Machine",
-    "Pec Deck Machine",
-    "Cable Chest Fly",
-    "Cable Triceps Pushdown",
-    "Cable Bicep Curls",
-    "Cable Lateral Raises",
-    "Treadmill Running",
-    "Rowing Machine",
-    "Jump Rope",
-    "Stair Climber",
-    "Battle Ropes",
-    "Assault Bike",
-    "Sled Push",
-    "Agility Ladder Drills",
-    "Box Jumps",
-    "Sprint Intervals",
-    "Russian Twists",
+    "Calf Raises",
+    "Lat Pulldowns",
+    "Hammer Curls",
+    "Shoulder Shrugs",
+    "Leg Curls",
+    "Chest Flyes",
+    "Front Squats",
+    "Glute Bridges",
+    "Tricep Extensions",
     "Hanging Leg Raises",
-    "Cable Woodchopper",
-    "Medicine Ball Slams",
-    "Dead Bug Exercise",
-    "Hollow Body Hold",
-    "V-Ups",
-    "Side-to-Side Plank Twists",
-    "Standing Oblique Crunches",
-    "Hanging Knee Tucks",
-  ];
+    "Side Planks",
+    "Russian Twists",
+    "Mountain Climbers",
+    "Jumping Jacks",
+    "High Knees",
+    "Box Jumps",
+    "Battle Ropes",
+    "Kettlebell Swings",
+    "Goblet Squats",
+    "Step-ups",
+    "Walking Lunges",
+    "Split Squats",
+    "Bulgarian Split Squats",
+    "Calf Raise Variations",
+    "Hamstring Curls",
+    "Leg Extensions",
+    "Hip Thrusts",
+    "Glute Kickbacks",
+    "Donkey Kicks",
+    "Fire Hydrants",
+    "Reverse Crunches",
+    "Bicycle Crunches",
+    "Leg Raises",
+    "Flutter Kicks",
+    "Scissor Kicks",
+    "Reverse Plank",
+    "Side Crunches",
+    "Oblique Crunches",
+    "Hanging Knee Raises",
+    "Toe Touches",
+    "Reverse Hyperextensions",
+    "Good Mornings",
+    "Hip Circles",
+    "Hip Flexor Stretch",
+    "Hamstring Stretch",
+    "Quad Stretch",
+    "Chest Stretch",
+    "Shoulder Stretch",
+    "Tricep Stretch",
+    "Bicep Stretch",
+    "Forearm Stretch",
+    "Wrist Stretch",
+    "Neck Stretch",
+    "Cat-Cow Stretch",
+    "Downward Dog",
+    "Upward Dog",
+    "Cobra Stretch",
+    "Child's Pose",
+    "Pigeon Pose",
+    "Warrior Pose",
+    "Triangle Pose",
+    "Tree Pose",
+    "Eagle Pose",
+    "Chair Pose",
+    "Bridge Pose",
+    "Wheel Pose",
+    "Fish Pose",
+    "Boat Pose",
+    "Crow Pose",
+    "Headstand",
+    "Handstand",
+    "Forearm Stand",
+    "Side Plank Variations",
+    "Reverse Flyes",
+    "Face Pulls",
+    "Rear Delt Flyes",
+    "Front Raises",
+    "Lateral Raises",
+    "Shrugs",
+    "Upright Rows",
+    "Close-Grip Bench Press",
+    "Incline Bench Press",
+    "Decline Bench Press",
+    "Floor Press",
+    "Dumbbell Flyes",
+    "Cable Flyes",
+    "Pushdowns",
+    "Skull Crushers",
+    "Overhead Extensions",
+    "Dips",
+    "Close-Grip Push-ups",
+    "Concentration Curls",
+    "Preacher Curls",
+    "Drag Curls",
+    "Zottman Curls",
+    "Barbell Curls",
+    "EZ Bar Curls",
+    "Resistance Band Curls",
+    "Cable Curls",
+    "Incline Curls",
+    "Decline Curls",
+    "Hammer Strength Curls",
+    "Seated Curls",
+    "Standing Curls",
+    "Kneeling Curls",
+    "Lying Curls"
+];
 
-  const promptWorkout = `
-  Generate a *complete* structured workout plan for ${daysPerWeek} days per week over ${weeks} weeks.
 
-  ### Requirements:
-  - *Each day of every week must be included* in the response.
-  - *Exercises MUST be chosen only from the predefined list below.*
-  - The plan should align with the user’s *fitness level, training goal, and available equipment*.
-  - The *entire workout plan must be returned in one response*, do not truncate.
-  - Use *concise descriptions* to fit within the response limit.
+const promptWorkout = `
+Generate a *complete* structured workout plan for ${weeklyFrequency} days per week over ${programDuration} weeks.
 
-  ---
+### Requirements:
+- *Each day of weeklyFrequence given must be included* in the response.
+- *Exercises MUST be chosen only from the predefined list below.*
+- The plan should align with the user’s *fitness level, training goal, and available equipment*.
+- The *entire workout plan must be returned in one response*, do not truncate.
+- Use *concise descriptions* to fit within the response limit.
+- Consider the user's *intensity level* and *health considerations*.
+- Include *no rest days* if specified.
+- Adjust the *session length* and *equipment* as per user input.
 
-  ### User Inputs:
-  - *Training Goal:* ${trainingGoal}
-  - *Training Type:* ${trainingType}
-  - *Desired Results:* ${desiredResults}
-  - *Fitness Level:* ${fitnessLevel}
-  - *Available Equipment:* ${availableEquipment.length > 0 ? availableEquipment.join(", ") : "None"}
-  - *Workout Duration Per Day:* ${workoutDuration}
-  - *Number of Weeks:* ${weeks}
-  - *Physical Condition or Limitations:* ${physicalCondition ? physicalCondition : "None"}
+---
 
-  ---
+### User Inputs:
+- *Training Goal:* ${goal}
+- *Training Type:* ${eventName}
+- *Body Metrics:* Height: ${bodyMetrics.height} cm, Weight: ${bodyMetrics.weight} kg
+- *Program Duration:* ${programDuration} weeks
+- *Equipment Available:* ${equipment.length > 0 ? equipment.join(", ") : "None"}
+- *Session Length:* ${sessionLength} minutes
+- *Weekly Frequency:* ${weeklyFrequency} days per week
+- *No Rest Days:* ${noRestDays ? "Yes" : "No"}
+- *Intensity Level:* ${intensityLevel}
+- *Health Considerations:* ${healthConsiderations.length > 0 ? healthConsiderations.join(", ") : "None"}
+- *Additional Details:* ${additionalDetails}
+- *Physical Condition or Limitations:* ${healthConsiderations.length > 0 ? healthConsiderations.join(", ") : "None"}
 
-  ### Exercise List (Select from below only):
-  ${exerciseList.map(exercise => `- ${exercise}`).join('\n')}
+---
 
-  ---
+### Exercise List (Select from below only):
+${exerciseList.map(exercise => `- ${exercise}`).join('\n')}
 
-  ### Output Format (Valid JSON covering ALL weeks & days):
-  \`\`\`json
-  {
-      "weeks": [
-          {
-              "week": 1,
-              "days": [
-                  {
-                      "day": 1,
-                      "exercises": [
-                          {
-                              "name": "Exercise Name (from the list above)",
-                              "instructions": "Step-by-step instructions.",
-                              "description": "Brief explanation.",
-                              "sets": 3,
-                              "reps": 12,
-                              "restTime": "45 sec",
-                              "equipment": ["Dumbbells"],
-                              "muscleGroup": ["Chest", "Triceps"]
-                          }
-                      ],
-                      "status": "pending"
-                  }
-                  // Repeat for all days
-              ]
-          }
-          // Repeat for all weeks
-      ]
-  }
-  \`\`\`
-  `;
+---
+
+### Output Format (Valid JSON covering ALL weeks & days):
+Return the structured workout plan in JSON format following this structure:
+
+\`\`\`json
+{
+    "weeks": [
+        {
+            "week": 1,
+            "days": [
+                {
+                    "day": 1,
+                    "exercises": [
+                        {
+                            "name": "Exercise Name",
+                            "instructions": "Step-by-step instructions on how to perform the exercise correctly.",
+                            "description": "Brief description of the exercise and its benefits.",
+                            "sets": 3,
+                            "reps": 12,
+                            "time": "30 sec",
+                            "restTime": "45 sec",
+                            "image": "",
+                            "equipment": ["Dumbbells"],
+                            "muscleGroup": ["Chest", "Triceps"]
+                        }
+                    ],
+                    "status": "pending"
+                }
+            ],
+            "status": "pending"
+        }
+    ]
+}
+\`\`\`
+`;
+
 
   try {
     // Call Mistral API
     const chatResponse = await client.chat.complete({
       model: "mistral-large-latest",
       messages: [{ role: "user", content: promptWorkout }],
-      maxTokens: 20000,
+      maxTokens: 18000,
     });
 
     if(!chatResponse) {
