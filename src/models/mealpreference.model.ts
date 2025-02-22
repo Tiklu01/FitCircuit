@@ -9,6 +9,9 @@ interface IMealPreference extends Document {
     mealCountPreference: '3 Meals' | '5 Meals' | '6+ Meals';
     foodPreferences: string[];
     goal: string;
+    bmi: number;
+    height: number;
+    weight: number;
 }
 
 const mealPreferenceSchema = new Schema<IMealPreference>(
@@ -24,18 +27,19 @@ const mealPreferenceSchema = new Schema<IMealPreference>(
             required: true,
         },
         allergies: { type: String, default: "" }, // Stores user's allergies
-        caloricIntakeGoal: { type: Number, required: true, min: 1200, max: 4000 },
         mealCountPreference: {
             type: String,
             enum: ['3 Meals', '5 Meals', '6+ Meals'],
             required: true,
         },
+        bmi: { type: Number, default: 0 },
+        height: { type: Number, default: 0 },
+        weight: { type: Number, default: 0 },
     },
     { timestamps: true }
 );
 
 const MealPreference = models.MealPreference || model<IMealPreference>('MealPreference', mealPreferenceSchema);
-
 
 export { MealPreference };
 
