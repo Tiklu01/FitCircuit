@@ -1,6 +1,6 @@
 # FitCircuit
 
-![FitCircuit Logo](https://asset.cloudinary.com/dwt633pc6/888f5323fb1515ffee72d45d8436531f)
+![FitCircuit Logo](https://asset.cloudinary.com/dwt633pc6/888f5323fb1515ffee72d45d843653)
 
 FitCircuit is an innovative platform designed to revolutionize your fitness and nutrition journey. By leveraging AI and advanced data management, FitCircuit provides personalized workout plans, tailored meal plans, and real-time nutritional insights to help you achieve your health goals efficiently.
 
@@ -37,3 +37,15 @@ FitCircuit is an innovative platform designed to revolutionize your fitness and 
    ```bash
    git clone https://github.com/your-username/fitcircuit.git
    cd fitcircuit
+Install dependencies:
+
+
+npm install
+Set up environment variables:
+
+Create a .env file in the root directory.
+Add your MongoDB connection string, API keys, and other necessary environment variables.
+Start the development server:
+
+
+npm run dev
