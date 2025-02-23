@@ -129,10 +129,7 @@ export default function WeeklyMealOverview() {
             <h1 className="text-2xl font-semibold mb-1">Weekly Meal Overview</h1>
             <p className="text-gray-600">February 19 - February 25, 2024</p>
           </div>
-          <div className="flex gap-3">
-            <Button variant="outline" size="sm">← Previous Week</Button>
-            <Button variant="default" size="sm">Next Week →</Button>
-          </div>
+         
         </div>
 
         <div className="grid gap-4 md:grid-cols-4 mb-8">
