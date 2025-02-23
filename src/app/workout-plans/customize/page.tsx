@@ -129,7 +129,6 @@ export default function CustomizeWorkoutPlan() {
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
           <div className="text-center">
             <h1 className="text-2xl font-bold tracking-tight">Customize Your Workout Plan</h1>
-            <p className="text-muted-foreground">Step 1 of 3 • Set Your Preferences</p>
             <div className="w-full bg-secondary h-2 mt-4 rounded-full overflow-hidden">
               <div className="bg-primary h-full w-1/3" />
             </div>
@@ -387,10 +386,11 @@ export default function CustomizeWorkoutPlan() {
                 />
               </CardContent>
             </Card>
-
-            <Button type="submit" className="w-full">
-             {loading ? "Loading":  "Continue to Next Step" }
+            <div className="flex justify-center"> 
+            <Button type="submit" className="mx-auto mt-6 bg-[#4CAF50] hover:bg-[#45a049] text-white shadow-md ">
+             {loading ? "Loading...":  "Continue to Dashboard →" }
             </Button>
+            </div>
           </form>
         </motion.div> 
       </main>
