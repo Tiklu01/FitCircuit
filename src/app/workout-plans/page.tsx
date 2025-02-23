@@ -210,7 +210,7 @@ export default function WorkoutPlans() {
       }
     }
 fetchUser();
-})
+},[])
 
   const chartOptions = {
     responsive: true,
