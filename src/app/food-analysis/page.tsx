@@ -17,6 +17,7 @@ export default function FoodAnalysis() {
   const [loading, setLoading] = useState(false)
   const [uploadedUrl, setUploadedUrl] = useState<string | null>(null)
   const [foodData, setFoodData] = useState<any>(null)
+  const [portion, setPortion] = useState<string>("") // New state for portion
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
@@ -35,6 +36,9 @@ export default function FoodAnalysis() {
     const file = event.target.files[0]
     const formData = new FormData()
     formData.append("file", file)
+    if (portion) {
+      formData.append("portion", portion) // Append portion if provided
+    }
 
     setUploading(true)
     setLoading(true) // Start loading animation
@@ -93,6 +97,18 @@ export default function FoodAnalysis() {
             </div>
           </div>
 
+          {/* Optional Portion Input */}
+          <div className="bg-white p-6 rounded-2xl shadow-sm">
+            <h2 className="text-lg font-semibold mb-4">Optional: Enter Weight/Portion/Serving</h2>
+            <input
+              type="text"
+              placeholder="e.g., 200g, 1 serving, half a portion"
+              value={portion}
+              onChange={(e) => setPortion(e.target.value)}
+              className="w-full p-2 border rounded-lg"
+            />
+          </div>
+
           {/* Chart with Fixed Size */}
           <div className="bg-white p-6 rounded-2xl shadow-sm max-w-full">
             <h2 className="text-lg font-semibold mb-4">Macro Distribution</h2>
@@ -104,7 +120,7 @@ export default function FoodAnalysis() {
             )}
           </div>
             </div>
-           
+
         </div>
 
         {/* Skeleton Loader for Analysis Result */}
