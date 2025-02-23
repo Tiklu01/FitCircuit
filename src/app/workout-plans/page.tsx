@@ -1,5 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 /* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // "use client";
 
@@ -1114,7 +1114,7 @@ export default function WorkoutPlans() {
           <div className="flex justify-between items-center bg-black text-white p-6 rounded-lg">
             <div>
               <h1 className="text-2xl font-bold">Keep pushing, John!</h1>
-              <p className="text-gray-300">"The only bad workout is the one that didn't happen."</p>
+              <p className="text-gray-300">&quot;The only bad workout is the one that didn&apos;t happen.&quot;</p>
             </div>
             <div className="text-right">
               <h2 className="text-xl font-semibold">Week {selectedWeek}</h2>
