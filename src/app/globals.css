@@ -36,4 +36,19 @@ body {
   justify-content: center;
   background-color: var(--background); /* Use your theme's background color */
   z-index: 50; /* Ensure it's on top of everything */
+} 
+
+ 
+
+@layer base {} 
+
+ 
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
 }
