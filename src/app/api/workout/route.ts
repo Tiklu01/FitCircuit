@@ -285,7 +285,7 @@ Return the structured workout plan in JSON format following this structure:
                             "image": "",
                             "equipment": ["Dumbbells"],
                             "muscleGroup": ["Chest", "Triceps"],
-                            "caloriesBurned": 100
+                            "caloriesBurned": "Estimated calories burned per completion of exercise e.g 200"
                         }
                     ],
                     "status": "pending"
