@@ -104,7 +104,6 @@ export default function CustomizeMealPlan() {
         >
           <div className="text-center">
             <h1 className="text-2xl font-bold tracking-tight">Customize Your Meal Plan</h1>
-            <p className="text-muted-foreground">Step 2 of 5 • Meal Preferences</p>
             <div className="w-full bg-secondary h-2 mt-4 rounded-full overflow-hidden">
               <motion.div
                 initial={{ width: "0%" }}
