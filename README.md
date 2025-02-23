@@ -39,13 +39,15 @@ FitCircuit is an innovative platform designed to revolutionize your fitness and 
    cd fitcircuit
 Install dependencies:
 
-
+```bash
 npm install
+
+```
 Set up environment variables:
 
 Create a .env file in the root directory.
 Add your MongoDB connection string, API keys, and other necessary environment variables.
 Start the development server:
 
-
+```bash
 npm run dev
