@@ -665,7 +665,7 @@ export default function WorkoutPlans() {
           <div className="flex justify-between items-center bg-black text-white p-6 rounded-lg">
             <div>
               <h1 className="text-2xl font-bold">Keep pushing, John!</h1>
-              <p className="text-gray-300">"The only bad workout is the one that didn't happen."</p>
+              <p className="text-gray-300">&quot;The only bad workout is the one that didn&apos;t happen.&quot;</p>
             </div>
             <div className="text-right">
               <h2 className="text-xl font-semibold">Week {selectedWeek}</h2>
@@ -739,12 +739,13 @@ export default function WorkoutPlans() {
                   <CardContent className="p-4">
                     <div className="flex gap-4">
                       <Image
+                        priority
+                        unoptimized
                         src={exercise.imageUrl || "/fit.jpeg"}
                         alt={exercise.name}
                         width={80}
                         height={80}
-                        className="rounded-md object-cover"
-                      />
+                        className="rounded-md object-cover"/>
                       <div className="flex-1">
                         <div className="flex justify-between items-start">
                           <div>
