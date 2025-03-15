@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { connectDB } from "@/db";
 import { MealPlan } from "@/models/meal.model";
 import { MealPreference } from "@/models/mealpreference.model";
@@ -160,7 +161,7 @@ if (!updatedMealPreference) {
     mealPlan = new MealPlan({ userId: user._id, days: [] });
   }
 
-  // Update the days with the new meal data
+  // Update the days with the new meal data 
   jsonResponse.days.forEach((dayData: any) => {
     const dayIndex = mealPlan.days.findIndex((d: any) => d.day === dayData.day);
     if (dayIndex === -1) {
