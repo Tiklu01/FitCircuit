@@ -151,7 +151,7 @@ export default function NutritionPage() {
                     </div>
                     <span className="text-sm font-medium text-gray-600">Calories</span>
                   </div>
-                  <span className="text-xs text-gray-400">Target: {macroTargets.calories}</span>
+                  {/* <span className="text-xs text-gray-400">Target: {macroTargets.calories}</span> */}
                 </div>
                 <div className="space-y-2">
                   <div className="text-2xl font-bold">{totalCalories} kcal</div>
@@ -170,7 +170,7 @@ export default function NutritionPage() {
                     </div>
                     <span className="text-sm font-medium text-gray-600">Protein</span>
                   </div>
-                  <span className="text-xs text-gray-400">Target: {macroTargets.protein}g</span>
+                  {/* <span className="text-xs text-gray-400">Target: {macroTargets.protein}g</span> */}
                 </div>
                 <div className="space-y-2">
                   <div className="text-2xl font-bold">{totalProtein}g</div>
@@ -189,7 +189,7 @@ export default function NutritionPage() {
                     </div>
                     <span className="text-sm font-medium text-gray-600">Carbs</span>
                   </div>
-                  <span className="text-xs text-gray-400">Target: {macroTargets.carbs}g</span>
+                  {/* <span className="text-xs text-gray-400">Target: {macroTargets.carbs}g</span> */}
                 </div>
                 <div className="space-y-2">
                   <div className="text-2xl font-bold">{totalCarbs}g</div>
@@ -208,7 +208,7 @@ export default function NutritionPage() {
                     </div>
                     <span className="text-sm font-medium text-gray-600">Fat</span>
                   </div>
-                  <span className="text-xs text-gray-400">Target: {macroTargets.fat}g</span>
+                  {/* <span className="text-xs text-gray-400">Target: {macroTargets.fat}g</span> */}
                 </div>
                 <div className="space-y-2">
                   <div className="text-2xl font-bold">{totalFat}g</div>

@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-sync-scripts */
 import type { Metadata } from "next";
 import LoadingAnimation from "@/components/loadinganimation";
 import { Geist, Geist_Mono } from "next/font/google";
